@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="backend.lab3.mybatis.config.mapper.UserMapper">
+
+    <select id="findUserById" parameterType="int" resultType="backend.lab3.mybatis.po.User">
+        SELECT * FROM User WHERE userID = #{userID}
+    </select>
+
+    <select id="findUserByUsername" parameterType="java.lang.String" resultType="backend.lab3.mybatis.po.User">
+        SELECT * FROM User WHERE username = #{username}
+    </select>
+
+    <insert id="addUser" parameterType="backend.lab3.mybatis.po.User" useGeneratedKeys="true" keyProperty="userID">
+        INSERT INTO User (username, password, email, phone)
+        VALUES (#{username}, #{password}, #{email}, #{phone})
+    </insert>
+
+    <select id="getAllUsernames" resultType="java.lang.String">
+        SELECT username FROM User
+    </select>
+
+</mapper>
