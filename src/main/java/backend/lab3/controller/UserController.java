@@ -19,12 +19,17 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public @ResponseBody Object register(@RequestBody UserRegisterRequest request) throws IOException {
+        System.out.println(request.getUsername());
+        System.out.println(request.getPassword());
+        System.out.println(request.getEmail());
+        System.out.println(request.getPhone());
         SqlSession sqlSession = SqlSessionLoader.getSqlSession();
         User user = sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findUserByUsername", request.getUsername());
         if (user != null) {
             sqlSession.close();
             return new ErrorResponse("The username is already used");
         } else {
+
             sqlSession.insert("backend.lab3.mybatis.config.mapper.UserMapper.addUser",
                     new User(request.getUsername(), request.getPassword(), request.getEmail(), request.getPhone()));
             sqlSession.commit();
@@ -41,9 +46,6 @@ public class UserController {
             sqlSession.close();
             return new ErrorResponse("The username not exists, please register first");
         } else if (!user.getPassword().equals(request.getPassword())) {
-            System.out.println();
-            System.out.println(request.getPassword());
-            System.out.println(user.getPassword()==request.getPassword());
             sqlSession.close();
             return new ErrorResponse("Incorrect password");
         }else{
