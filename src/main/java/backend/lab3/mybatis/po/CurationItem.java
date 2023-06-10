@@ -2,24 +2,26 @@ package backend.lab3.mybatis.po;
 
 public class CurationItem {
     private int curationItemId;
-    private int userId;
-    private int nftId;
+    private int userID;
+    private int nftID;
 
+    public CurationItem(){    
+    }
+
+    public CurationItem(int curationItemId, int userID, int nftID) {
+        this.curationItemId = curationItemId;
+        this.userID = userID;
+        this.nftID = nftID;
+    }
+
+    public CurationItem(int userID, int nftID) {
+        this.userID = userID;
+        this.nftID = nftID;
+    }
+
+    
     // Getters and setters
     // ...
-    public CurationItem(int curationItemId, int userId, int nftId) {
-        this.curationItemId = curationItemId;
-        this.userId = userId;
-        this.nftId = nftId;
-    }
-
-    public int getNftId() {
-        return nftId;
-    }
-
-    public void setNftId(int nftId) {
-        this.nftId = nftId;
-    }
 
     public int getCurationItemId() {
         return curationItemId;
@@ -29,13 +31,25 @@ public class CurationItem {
         this.curationItemId = curationItemId;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getuserID() {
+        return userID;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setuserID(int userID) {
+        this.userID = userID;
     }
+
+    public void setnftID(int nftID) {
+        this.nftID = nftID;
+    }
+
+    public int getnftID() {
+        return nftID;
+    }
+
+    
+
+
 
     
 }

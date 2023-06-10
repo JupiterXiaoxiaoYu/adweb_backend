@@ -16,24 +16,29 @@
         SELECT * FROM Nft WHERE owner = #{owner}
     </select>
 
-    <select id="findNftsByName" parameterType="String" resultType="backend.lab3.mybatis.po.Nft">
-        SELECT * FROM Nft WHERE name LIKE CONCAT('%', #{name}, '%')
-    </select>
-
-    <select id="findNftsByDescription" parameterType="String" resultType="backend.lab3.mybatis.po.Nft">
-        SELECT * FROM Nft WHERE description LIKE CONCAT('%', #{description}, '%')
+    <select id="findNftsByKeywords" parameterType="String" resultType="backend.lab3.mybatis.po.Nft">
+        SELECT * FROM Nft WHERE name LIKE CONCAT('%', #{keywords}, '%')
+        OR description LIKE CONCAT('%', #{keywords}, '%')
     </select>
 
     <select id="findNftById" parameterType="int" resultType="backend.lab3.mybatis.po.Nft">
         SELECT * FROM Nft WHERE nftID = #{nftID}
     </select>
 
-    <select id="getShopItemByUserId" parameterType="int" resultType="backend.lab3.mybatis.po.Nft">
+    <select id="getShopItemByUserId" parameterType="int" resultType="backend.lab3.mybatis.po.ShopItem">
         SELECT * FROM ShopItem WHERE userID = #{userID}
     </select>
 
-    <select id="getCurationItemByUserId" parameterType="int" resultType="backend.lab3.mybatis.po.Nft">
+    <select id="getShopItemByNftID" parameterType="int" resultType="backend.lab3.mybatis.po.ShopItem">
+        SELECT * FROM ShopItem WHERE nftID = #{nftID}
+    </select>
+
+    <select id="getCurationItemByUserId" parameterType="int" resultType="backend.lab3.mybatis.po.CurationItem">
         SELECT * FROM CurationItem WHERE userID = #{userID}
+    </select>
+
+    <select id="getCurationItemByNftID" parameterType="int" resultType="backend.lab3.mybatis.po.CurationItem">
+        SELECT * FROM CurationItem WHERE nftID = #{nftID}
     </select>
 
     <insert id="addNft" parameterType="backend.lab3.mybatis.po.Nft" useGeneratedKeys="true" keyProperty="nftID">
@@ -41,24 +46,28 @@
         VALUES (#{name}, #{description}, #{owner}, #{status}, #{image})
     </insert>
 
-    <update id="buyNft" parameterType="int">
-        UPDATE Nft SET owner = #{userID}, status = 'unlisted' WHERE nftID = #{nftID}
-    </update>
-
     <update id="listNft" parameterType="int">
         UPDATE Nft SET status = 'listed' WHERE nftID = #{nftID}
-        UPDATE ShopItem SET price = #{price} WHERE nftID = #{nftID}
+    </update>
+
+    <insert id="addShopItem" parameterType="backend.lab3.mybatis.po.Nft">
+        INSERT INTO ShopItem (nftID, userID, price)
+        VALUES (#{nftID}, #{userID}, #{price})
+    </insert>
+
+    <update id="buyNft" parameterType="int">
+        UPDATE Nft SET owner = #{userID}, status = 'unlisted' WHERE nftID = #{nftID}
     </update>
 
     <update id="unlistNft" parameterType="int">
         UPDATE Nft SET status = 'unlisted' WHERE nftID = #{nftID}
     </update>
 
-    <delete id="removeFromShop" parameterType="int">
+    <delete id="deleteShopItem" parameterType="int">
         DELETE FROM ShopItem WHERE nftID = #{nftID}
     </delete>
 
-    <insert id="curateNft" parameterType="backend.lab3.mybatis.po.Nft" useGeneratedKeys="true" keyProperty="nftID">
+    <insert id="curateNft" parameterType="backend.lab3.mybatis.po.CurationItem" useGeneratedKeys="true" keyProperty="nftID">
         INSERT INTO CurationItem (userID, nftID)
         VALUES (#{userID}, #{nftID})
     </insert>
@@ -66,6 +75,12 @@
     <delete id="uncurateNft" parameterType="int">
         DELETE FROM CurationItem WHERE nftID = #{nftID}
     </delete>
+
+    <update id="modifyListedPrice" parameterType="int">
+        UPDATE ShopItem SET price = #{price} WHERE nftID = #{nftID}
+    </update>
+
+
 
 
 </mapper>
