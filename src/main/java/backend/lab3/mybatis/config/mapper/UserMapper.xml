@@ -8,17 +8,49 @@
         SELECT * FROM User WHERE userID = #{userID}
     </select>
 
-    <select id="findUserByUsername" parameterType="java.lang.String" resultType="backend.lab3.mybatis.po.User">
-        SELECT * FROM User WHERE username = #{username}
+    <select id="findUserByName" parameterType="java.lang.String" resultType="backend.lab3.mybatis.po.User">
+        SELECT * FROM User WHERE name = #{name}
     </select>
 
     <insert id="addUser" parameterType="backend.lab3.mybatis.po.User" useGeneratedKeys="true" keyProperty="userID">
-        INSERT INTO User (username, password, email, phone)
-        VALUES (#{username}, #{password}, #{email}, #{phone})
+        INSERT INTO User (gender, name, password, birthday,image)
+        VALUES (#{gender}, #{name}, #{password}, #{birthday},#{image})
     </insert>
 
-    <select id="getAllUsernames" resultType="java.lang.String">
-        SELECT username FROM User
+    <select id="getAllNames" resultType="java.lang.String">
+        SELECT name FROM User
     </select>
+
+    <update id="updateUser" parameterType="backend.lab3.mybatis.po.User">
+        UPDATE  User SET gender=#{gender} ,name=#{name}, password = #{password},birthday=#{birthday},image=#{image}
+        WHERE userID = #{userID}
+    </update>
+
+    <insert id="addaccount" parameterType="backend.lab3.mybatis.po.account" useGeneratedKeys="true" keyProperty="accountID">
+        INSERT INTO account (userID, funds)
+        VALUES (#{userID}, #{funds})
+    </insert>
+    <update id="updateaccount" parameterType="backend.lab3.mybatis.po.account">
+        UPDATE  account SET funds=#{funds} WHERE userID = #{userID}
+    </update>
+    <select id="findAccountByID"  parameterType="int"  resultType="backend.lab3.mybatis.po.account">
+        SELECT * FROM account WHERE userID = #{userID}
+    </select>
+    <insert id="addtrade" parameterType="backend.lab3.mybatis.po.trade" useGeneratedKeys="true" keyProperty="tradeID">
+        INSERT INTO trade (userinID, useroutID, funds, time)
+        VALUES (#{userinID}, #{useroutID}, #{funds}, #{time})
+    </insert>
+    <select id="getTradesByUserinID" parameterType="int" resultType="backend.lab3.mybatis.po.trade">
+    SELECT * FROM trade WHERE userinID=#{userinID}
+    </select>
+    <select id="getTradesByUseroutID" parameterType="int" resultType="backend.lab3.mybatis.po.trade">
+        SELECT * FROM trade WHERE useroutID=#{useroutID}
+
+    </select>
+
+
+
+
+
 
 </mapper>

@@ -1,17 +1,23 @@
 package backend.lab3.request;
 
-public class UserRegisterRequest {
-    private String username;
-    private String password;
-    private String email;
-    private String phone;
+import java.time.LocalDate;
 
-    public String getUsername() {
-        return username;
+public class UserRegisterRequest {
+   private String name;
+   private String password;
+   private String image;
+   private int gender;
+   private String birthday;
+
+    public UserRegisterRequest() {
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -22,22 +28,29 @@ public class UserRegisterRequest {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getImage() {
+        return image;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getPhone() {
-        return phone;
+    public int getGender() {
+        return gender;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
     // Additional getter and setter methods for the remaining properties
 }
 

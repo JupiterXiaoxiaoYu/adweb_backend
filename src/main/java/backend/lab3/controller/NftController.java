@@ -1,6 +1,10 @@
 package backend.lab3.controller;
-
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import backend.lab3.mybatis.SqlSessionLoader;
+import backend.lab3.mybatis.po.*;
 import backend.lab3.request.UserGeneralRequest;
 import backend.lab3.request.AddNftRequest;
 import backend.lab3.request.GetAllNftRequest;
@@ -12,17 +16,16 @@ import backend.lab3.request.BuyNftRequest;
 
 import backend.lab3.response.ErrorResponse;
 import backend.lab3.response.GeneralResponse;
+import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.session.SqlSession;
 
-import backend.lab3.mybatis.po.CurationItem;
-import backend.lab3.mybatis.po.Nft;
-import backend.lab3.mybatis.po.ShopItem;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -179,23 +182,57 @@ public class NftController {
         String userId = httpRequest.getHeader("userID");
         System.out.println(request.getNftID());
         ShopItem nft = sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.getShopItemByNftID", request.getNftID());
-        if(nft==null){
+        if (nft == null) {
             sqlSession.close();
             return new ErrorResponse("NFT is not listed!");
-        }else if(nft.getNftPrice()<=0){
+        } else if (nft.getNftPrice() <= 0) {
             sqlSession.close();
             return new ErrorResponse("Price must be positive!");
-        } else if(((Nft) sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.findNftById", request.getNftID())).getNftOwner()==userId){
+        } else if (((Nft) sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.findNftById", request.getNftID())).getNftOwner() == userId) {
             sqlSession.close();
             return new ErrorResponse("You can't buy your own NFT!");
-        }
-        sqlSession.update("backend.lab3.mybatis.config.mapper.NftMapper.buyNft", request.getNftID());
-        sqlSession.delete("backend.lab3.mybatis.config.mapper.NftMapper.deleteShopItem", request.getNftID());
-        sqlSession.commit();
-        sqlSession.close();
-        return new GeneralResponse("Buy Successfully!");
-    }
+        } else {
 
+
+            account account1=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findAccountByID",request.getUserID());
+            account account2=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findAccountByID",nft.getuserID());
+            if (nft.getNftPrice()>account1.getFunds()){
+                return new GeneralResponse("you do not have enough money in account!");}
+            else{
+                sqlSession.update("backend.lab3.mybatis.config.mapper.UserMapper.updateaccount",
+                        new account(request.getUserID(), account1.getFunds()- nft.getNftPrice()));
+                sqlSession.update("backend.lab3.mybatis.config.mapper.UserMapper.updateaccount",
+                        new account(account2.getUserID(), account2.getFunds()+nft.getNftPrice()));
+                Nft nft1=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.findNftById",nft.getnftID());
+
+                ZoneId shanghaiZone = ZoneId.of("Asia/Shanghai");
+
+                // 获取当前时间
+                LocalDateTime currentTime = LocalDateTime.now();
+
+                // 将当前时间转换为上海时区的时间
+                ZonedDateTime shanghaiTime = ZonedDateTime.of(currentTime, shanghaiZone);
+
+                // 格式化日期和时间为字符串
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String shanghaiTimeString = shanghaiTime.format(formatter);
+                String des=shanghaiTimeString+"   collectibles Trade:"+nft1.getNftName();
+
+
+
+
+
+
+
+                trade trade=new trade(account2.getUserID(),account1.getUserID(),nft.getNftPrice(),des);
+                sqlSession.insert("backend.lab3.mybatis.config.mapper.UserMapper.addtrade",trade);
+                sqlSession.update("backend.lab3.mybatis.config.mapper.NftMapper.buyNft", request.getNftID());
+            sqlSession.delete("backend.lab3.mybatis.config.mapper.NftMapper.deleteShopItem", request.getNftID());
+            sqlSession.commit();
+            sqlSession.close();
+            return new GeneralResponse("Buy Successfully!");
+        }}
+    }
 
 
     

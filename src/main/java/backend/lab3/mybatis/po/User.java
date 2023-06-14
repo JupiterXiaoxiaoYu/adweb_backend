@@ -1,26 +1,14 @@
 package backend.lab3.mybatis.po;
 
+import java.time.LocalDate;
+
 public class User {
     private int userID;
-    private String username;
+    private int gender;
+    private String name;
     private String password;
-    private String email;
-    private String phone;
-
-    public User(int userID, String username, String password, String email, String phone) {
-        this.userID = userID;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-    }
-
-    public User(String username, String password, String email, String phone) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-    }
+    private String birthday;
+    private String image;
 
     public int getUserID() {
         return userID;
@@ -30,12 +18,37 @@ public class User {
         this.userID = userID;
     }
 
-    public String getUsername() {
-        return username;
+    public User(int gender, String name, String password, String birthday, String image) {
+        this.gender = gender;
+        this.name = name;
+        this.password = password;
+        this.birthday = birthday;
+        this.image = image;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public User(int userID, String name, String password,String birthday,String image,int gender) {
+        this.userID = userID;
+        this.gender = gender;
+        this.name = name;
+        this.password = password;
+        this.birthday = birthday;
+        this.image = image;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -46,19 +59,19 @@ public class User {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getImage() {
+        return image;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setImage(String image) {
+        this.image = image;
     }
 }
