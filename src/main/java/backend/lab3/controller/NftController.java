@@ -157,7 +157,7 @@ public class NftController {
         return new GeneralResponse("Uncurate Successfully!");
     }
 
-    
+
     @RequestMapping(value = "/modify-price", method = RequestMethod.POST)
     public @ResponseBody Object modifyPrice(@RequestBody ModiftyNftPriceRequest request) throws IOException {
         SqlSession sqlSession = SqlSessionLoader.getSqlSession();
@@ -180,6 +180,7 @@ public class NftController {
     public @ResponseBody Object buyNft(@RequestBody BuyNftRequest request, HttpServletRequest httpRequest) throws IOException {
         SqlSession sqlSession = SqlSessionLoader.getSqlSession();
         String userId = httpRequest.getHeader("userID");
+        int id=Integer.parseInt(userId);
         System.out.println(request.getNftID());
         ShopItem nft = sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.getShopItemByNftID", request.getNftID());
         if (nft == null) {
@@ -194,13 +195,13 @@ public class NftController {
         } else {
 
 
-            account account1=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findAccountByID",request.getUserID());
+            account account1=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findAccountByID",id);
             account account2=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findAccountByID",nft.getuserID());
             if (nft.getNftPrice()>account1.getFunds()){
                 return new GeneralResponse("you do not have enough money in account!");}
             else{
                 sqlSession.update("backend.lab3.mybatis.config.mapper.UserMapper.updateaccount",
-                        new account(request.getUserID(), account1.getFunds()- nft.getNftPrice()));
+                        new account(id, account1.getFunds()- nft.getNftPrice()));
                 sqlSession.update("backend.lab3.mybatis.config.mapper.UserMapper.updateaccount",
                         new account(account2.getUserID(), account2.getFunds()+nft.getNftPrice()));
                 Nft nft1=sqlSession.selectOne("backend.lab3.mybatis.config.mapper.NftMapper.findNftById",nft.getnftID());
@@ -235,5 +236,5 @@ public class NftController {
     }
 
 
-    
+
 }

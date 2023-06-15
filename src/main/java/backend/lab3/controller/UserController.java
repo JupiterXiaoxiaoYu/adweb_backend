@@ -70,6 +70,17 @@ public class UserController {
         return usernames;
     }
 
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    public @ResponseBody Object getInfo(@RequestParam int userID)throws IOException {
+        SqlSession sqlSession = SqlSessionLoader.getSqlSession();
+        User user= sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findUserById",userID);
+
+        sqlSession.close();
+
+
+        return user;
+    }
+
     @RequestMapping(value = "/changeinfo", method = RequestMethod.POST)
     public @ResponseBody Object changeUsers(@RequestBody EditRequest request) throws IOException {
         SqlSession sqlSession = SqlSessionLoader.getSqlSession();
@@ -160,17 +171,6 @@ public class UserController {
         tradeResponse response=new tradeResponse(trades1,trades2,"success");
 
         return response;
-    }
-
-    @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public @ResponseBody Object getInfo(@RequestParam int userID)throws IOException {
-        SqlSession sqlSession = SqlSessionLoader.getSqlSession();
-        User user= sqlSession.selectOne("backend.lab3.mybatis.config.mapper.UserMapper.findUserById",userID);
-
-        sqlSession.close();
-
-
-        return user;
     }
 
 
